@@ -51,7 +51,6 @@ void setup() {
     button_last_value[i] = digitalRead(i);
     button_last_change_time[i] = 0;
   }
-
 }
 
 void loop() {
@@ -102,6 +101,15 @@ void loop() {
       Serial.print(":");
       Serial.println(pwm_val);
     }
+    if (inbyte == '!') { // !PING
+      inbyte = Serial.read();
+      if (inbyte == 'P') {
+        Serial.println("*PONG");
+      }
+      if (inbyte == 'H') {
+        print_help();
+      }
+    }
   }
   
   analogWrite(LED_RED, led_rgb[0]);
@@ -110,4 +118,11 @@ void loop() {
   analogWrite(LED_BUTTON_RED, led_button_red);
   
   delay(10);
+}
+
+void print_help() {
+ Serial.println("-Hello");
+  Serial.println("-Set R, G, B, or L with \"@C=val\" where 'C' is color and 'val' is 0-255.");
+  Serial.println("-Lines starting with '-' are informational.");
+  Serial.println("-Button status will be published with \"%Button Name: value\" where value is 1 or 0."); 
 }
