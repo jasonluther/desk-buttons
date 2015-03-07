@@ -5,7 +5,7 @@ lip_overhang = 3;
 hole_thickness = 8;
 hole_d = 28;
 protrude = 7;
-thickness = 1;
+thickness = 2;
 
 difference() {
   translate([0,0,0]) cylinder(h=lip_thickness, d=lip_overhang*2+hole_d);
@@ -15,6 +15,6 @@ difference() {
 diameter = hole_d;
 difference() {
   translate([0,0,0]) sphere(d=diameter);
-  translate([0,0,0]) sphere(d=diameter-thickness);
+  translate([0,0,0]) sphere(d=diameter-thickness*2);
   translate([-diameter/2,-diameter/2,-diameter+lip_thickness]) cube([diameter, diameter, diameter]);
 }
