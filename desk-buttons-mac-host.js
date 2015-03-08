@@ -27,9 +27,19 @@ function handle_serial_data(d) {
       var button_value = action[1].trim();
       if (button_value == 0) {
         console.log(button_name + ' was pressed');
+        handle_button_press(button_name);
       }
       break;
     default: 
       console.log("Unknown data format: " + d);
+  }
+}
+
+var mqtt = require('mqtt');
+var mqtt_client = mqtt.connect('mqtt://imac.local');
+
+function handle_button_press(button_name) {
+  if (button_name == 'Big Red Button') {
+    mqtt_client.publish('house/office/pandora', 'toggle');
   }
 }
