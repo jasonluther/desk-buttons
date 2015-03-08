@@ -1,3 +1,6 @@
+var mqtt = require('mqtt');
+var mqtt_client = mqtt.connect('mqtt://imac.local');
+
 var port = "/dev/tty.usbmodemfd14431";
 var serialport = require("serialport");
 var SerialPort = serialport.SerialPort;
@@ -30,16 +33,29 @@ function handle_serial_data(d) {
         handle_button_press(button_name);
       }
       break;
+    case '#': 
+      console.log("LED set: " + d);
+      break;
     default: 
       console.log("Unknown data format: " + d);
   }
 }
-
-var mqtt = require('mqtt');
-var mqtt_client = mqtt.connect('mqtt://imac.local');
 
 function handle_button_press(button_name) {
   if (button_name == 'Big Red Button') {
     mqtt_client.publish('house/office/pandora', 'toggle');
   }
 }
+
+mqtt_client.subscribe('house/office/desk/led/#');
+mqtt_client.on('message', function (topic, message) {
+  var which_led = topic.split('/').pop();
+  var led_value = message.toString();
+  console.log(which_led + ' = ' + led_value);
+  if (which_led == 'big-red-button') {
+    p.write('@L=' + led_value);
+  } else if (which_led == 'rgb') {
+
+  }
+});
+
