@@ -44,18 +44,30 @@ function handle_serial_data(d) {
 function handle_button_press(button_name) {
   if (button_name == 'Big Red Button') {
     mqtt_client.publish('house/office/pandora', 'toggle');
+  } else if (button_name == "White Button") {
+    mqtt_client.publish('house/info', 'I love you');
+  } else if (button_name == "Yellow Button") {
+    mqtt_client.publish('house/info', 'You are a little bit stinky');
   }
 }
 
 mqtt_client.subscribe('house/office/desk/led/#');
 mqtt_client.on('message', function (topic, message) {
   var which_led = topic.split('/').pop();
-  var led_value = message.toString();
+  var led_value = message.toString().trim();
   console.log(which_led + ' = ' + led_value);
   if (which_led == 'big-red-button') {
     p.write('@L=' + led_value);
   } else if (which_led == 'rgb') {
-
+    var re = /#?(..)(..)(..)/;
+    var m = re.exec(led_value);
+    console.log(m);
+    var r = parseInt(m[1], 16);
+    var g = parseInt(m[2], 16);
+    var b = parseInt(m[3], 16);
+    p.write('@R=' + r);
+    p.write('@G=' + g);
+    p.write('@B=' + b);
   }
 });
 
